@@ -1,0 +1,58 @@
+CREATE DATABASE IF NOT EXISTS man_inventaris;
+USE man_inventaris;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama VARCHAR(100),
+  email VARCHAR(100) UNIQUE,
+  password VARCHAR(100),
+  role ENUM('admin', 'user') DEFAULT 'user'
+);
+
+CREATE TABLE alat (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama VARCHAR(100),
+  jenis VARCHAR(100),
+  stok INT,
+  keterangan TEXT
+);
+
+CREATE TABLE pinjaman (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  alat_id INT,
+  tanggal_pinjam DATE,
+  tanggal_kembali DATE,
+  status ENUM('pending', 'disetujui', 'ditolak', 'dikembalikan') DEFAULT 'pending',
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (alat_id) REFERENCES alat(id)
+);
+
+CREATE TABLE notifikasi (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT,
+  pesan TEXT,
+  status_dibaca BOOLEAN DEFAULT FALSE,
+  dibuat_pada DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+"nama" : "Ruangan-A-304",
+  "jenis" : "ruangan",
+  "stok" : 1,
+  "keterangan" : "ruangan belajar"
+
+"email" : "admin123@gmail.com",
+  "password" : "admin123!@#"
+
+
+  "email" : "kafah@gmail.com",
+  "password" : "kaf123"
+
+
+
+"user_id": "John Doe",
+  "alat_id": "Proyektor",
+  "tanggal_pinjam": "2025-05-14",
+  "tanggal_kembali": "2025-05-16"
