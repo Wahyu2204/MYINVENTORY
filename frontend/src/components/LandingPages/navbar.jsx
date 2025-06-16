@@ -216,7 +216,7 @@ export default function Navbar() {
               alt="Flowbite Logo"
             />
             <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
-              Flowbite
+              My Inventory
             </span>
           </NavLink>
           <div className="flex items-center lg:order-2">
