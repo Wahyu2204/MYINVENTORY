@@ -215,8 +215,8 @@ export default function Navbar() {
               className="mr-3 h-8 sm:h-10 transition-transform hover:scale-110"
               alt="Flowbite Logo"
             />
-            <span className="self-center text-2xl font-bold whitespace-nowrap dark:text-white bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text">
-              Flowbite
+            <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+              My Inventory
             </span>
           </NavLink>
           <div className="flex items-center lg:order-2">
