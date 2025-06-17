@@ -11,6 +11,9 @@ export default function RiwayatUser() {
     const fetchRiwayat = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token tidak ditemukan. Silakan login ulang.");
+        }
         const response = await axios.get("http://localhost:3000/api/riwayat", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -19,6 +22,10 @@ export default function RiwayatUser() {
         setRiwayat(response.data.data);
         setLoading(false);
       } catch (err) {
+        if (err.response && err.response.status === 403) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+        }
         setError(`Gagal mengambil data riwayat: ${err.message}`);
         setLoading(false);
       }
@@ -41,10 +48,10 @@ export default function RiwayatUser() {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Nama Alat
+                      Nama
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Jumlah
+                      Alat
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Tanggal Pinjam
@@ -62,12 +69,12 @@ export default function RiwayatUser() {
                     <tr key={item.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {item.nama_alat}
+                          {item.nama_user || item.user_id}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 dark:text-white">
-                          {item.jumlah}
+                          {item.nama_alat || item.alat_id || "Tidak diketahui"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

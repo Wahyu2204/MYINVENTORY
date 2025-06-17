@@ -20,7 +20,7 @@ export default function Login() {
 
       const { token } = response.data;
       localStorage.setItem("token", token);
-      navigate("/homeUser");
+      navigate("/dashboard");
     } catch (err) {
       if (err.response) {
         setError(err.response.data.message || "Login gagal");
