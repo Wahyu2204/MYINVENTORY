@@ -55,19 +55,26 @@ const Pinjaman = {
           return rows;
     },
     async updateStatus(id, status) {
-        await db.query(
-            'UPDATE pinjaman SET status = ? WHERE id = ?',
-            [status, id]
-          );
-          const rows = await db.query(
+        if (status === "dikembalikan") {
+            await db.query(
+              'UPDATE pinjaman SET status = ?, tanggal_kembali = NOW() WHERE id = ?',
+              [status, id]
+            );
+        } else {
+            await db.query(
+              'UPDATE pinjaman SET status = ? WHERE id = ?',
+              [status, id]
+            );
+        }
+        const rows = await db.query(
             `SELECT p.*, u.nama AS nama_user, a.nama AS nama_alat
-             FROM pinjaman p
-             JOIN users u ON p.user_id = u.id
-             JOIN alat a ON p.alat_id = a.id
-             WHERE p.id = ?`,
+            FROM pinjaman p
+            JOIN users u ON p.user_id = u.id
+            JOIN alat a ON p.alat_id = a.id
+            WHERE p.id = ?`,
             [id]
-          );
-          return rows[0];
+        );
+        return rows[0];
     }
 }
 

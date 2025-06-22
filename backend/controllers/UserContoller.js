@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const UserController = {
     async register(req,res) {
-        const { email, password, nama, role } = req.body;
+        const { email, password, nama } = req.body;
         
         const exitingUser = await User.findByEmail(email);
         if (exitingUser) {
@@ -18,7 +18,7 @@ const UserController = {
                 nama,
                 email, 
                 password: hashedPassword,
-                role
+                // role
              });
             res.status(201).json({
                 message: "User berhasil dibuat",

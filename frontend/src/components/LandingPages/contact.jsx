@@ -24,7 +24,10 @@ export default function Contact() {
   };
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <section
+      id="contact"
+      className="min-h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800"
+    >
       <div className="py-16 px-4 mx-auto max-w-screen-lg relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

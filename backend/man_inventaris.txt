@@ -50,14 +50,9 @@ CREATE TABLE notifikasi (
   "email" : "kafah@gmail.com",
   "password" : "kaf123"
 
+
+
 "user_id": "John Doe",
   "alat_id": "Proyektor",
   "tanggal_pinjam": "2025-05-14",
   "tanggal_kembali": "2025-05-16"
-
-{
-  "nama" : "Mic",
-  "jenis" : "Electronic",
-  "stok" : "50",
-  "keterangan" : "Untuk memperbesar suara saat menerangkan mareti"
-}

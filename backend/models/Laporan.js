@@ -10,7 +10,8 @@ const Laporan = {
           FROM pinjaman p
           JOIN users u ON p.user_id = u.id
           JOIN alat a ON p.alat_id = a.id
-          WHERE p.tanggal_pinjam >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+          WHERE MONTH(p.tanggal_pinjam) = MONTH(CURDATE())
+            AND YEAR(p.tanggal_pinjam) = YEAR(CURDATE())
           ORDER BY p.tanggal_pinjam DESC
         `);
         return rows;

@@ -34,6 +34,27 @@ export default function RiwayatUser() {
     fetchRiwayat();
   }, []);
 
+  const handleKembalikan = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:3000/api/pinjaman/${id}/kembali`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Alat berhasil dikembalikan");
+      window.location.reload(); // atau panggil ulang fetch
+    } catch (err) {
+      alert(
+        `Gagal mengembalikan alat: ${
+          err.response?.data?.message || err.message
+        }`
+      );
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -61,6 +82,9 @@ export default function RiwayatUser() {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Aksi
                     </th>
                   </tr>
                 </thead>
@@ -95,6 +119,21 @@ export default function RiwayatUser() {
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                           {item.status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {item.status === "disetujui" &&
+                        !item.tanggal_kembali ? (
+                          <button
+                            onClick={() => handleKembalikan(item.id)}
+                            className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded"
+                          >
+                            Kembalikan
+                          </button>
+                        ) : (
+                          <span className="text-gray-400 italic text-sm">
+                            -
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

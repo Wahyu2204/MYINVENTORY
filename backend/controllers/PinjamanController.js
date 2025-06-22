@@ -41,6 +41,7 @@ const PinjamanController = {
                 data: pinjaman
             });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({
                 status: false,
                 message: 'Terjadi kesalahan saat meminjam alat',

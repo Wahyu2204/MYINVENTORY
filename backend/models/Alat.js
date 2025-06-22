@@ -2,8 +2,8 @@ const db = require('../config/database');
 
 const Alat = {
     async getAll() {
-        const [row] = await db.query('SELECT * FROM alat');
-        return row;
+        const rows = await db.query('SELECT * FROM alat');
+        return rows;
     },
     async getById(id) {
         const [row] = await db.query('SELECT * FROM alat WHERE id = ?', [id]);

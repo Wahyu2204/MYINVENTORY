@@ -1,4 +1,31 @@
+import React, { useState } from "react";
+import axios from "axios";
+
 export default function Register() {
+  const [formData, setFormData] = useState({
+    nama: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // const handleChange = (e) => {
+  //   setFormData({ ...formData, [e.target.nama]: e.target.value });
+  // };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    try {
+      await axios.post("http://localhost:3000/api/register", formData);
+      setSuccess("Registrasi berhasil! Silakan login.");
+      setFormData({ nama: "", email: "", password: "" });
+    } catch (err) {
+      setError(err.response?.data?.message || "Registrasi gagal");
+    }
+  };
   return (
     <section class="bg-gray-50 dark:bg-gray-900">
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -18,7 +45,26 @@ export default function Register() {
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Create an account
             </h1>
-            <form class="space-y-4 md:space-y-6" action="#">
+            <form class="space-y-4 md:space-y-6" onSubmit={handleRegister}>
+              <div>
+                <label
+                  for="nama"
+                  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Nama
+                </label>
+                <input
+                  type="text"
+                  name="nama"
+                  value={formData.nama}
+                  onChange={(e) =>
+                    setFormData({ ...formData, nama: e.target.value })
+                  }
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="Nama lengkap"
+                  required
+                />
+              </div>
               <div>
                 <label
                   for="email"
@@ -29,7 +75,10 @@ export default function Register() {
                 <input
                   type="email"
                   name="email"
-                  id="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   required
@@ -45,13 +94,16 @@ export default function Register() {
                 <input
                   type="password"
                   name="password"
-                  id="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   placeholder="••••••••"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   for="confirm-password"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -59,14 +111,17 @@ export default function Register() {
                   Confirm password
                 </label>
                 <input
-                  type="confirm-password"
-                  name="confirm-password"
-                  id="confirm-password"
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   placeholder="••••••••"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required
                 />
-              </div>
+              </div> */}
               <div class="flex items-start">
                 <div class="flex items-center h-5">
                   <input
@@ -92,6 +147,8 @@ export default function Register() {
                   </label>
                 </div>
               </div>
+              {error && <div className="text-red-600">{error}</div>}
+              {success && <div className="text-green-600">{success}</div>}
               <button
                 type="submit"
                 class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -101,7 +158,7 @@ export default function Register() {
               <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <a
-                  href="#"
+                  href="/login"
                   class="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Login here

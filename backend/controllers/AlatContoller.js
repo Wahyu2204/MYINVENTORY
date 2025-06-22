@@ -1,4 +1,5 @@
 const Alat = require('../models/Alat');
+const Notifikasi = require('../models/Notifikasi');
 require('dotenv').config();
 
 const AlatController = {
@@ -38,6 +39,13 @@ const AlatController = {
         const { nama, jenis, stok, keterangan } = req.body;
         try {
             const result = await Alat.create({ nama, jenis, stok, keterangan });
+            // const users = await Notifikasi.getAllUsersIds();
+            // console.log("user ids:", users);
+            // const pesan = `Alat baru telah ditambahkan: ${nama}`;
+            // for (const user of users) {
+            //     console.log("insert notif for:", user.id);
+            //     await Notifikasi.create(user.id, pesan);
+            // }
             res.status(201).json({
                 message: "Data alat berhasil ditambahkan",
                 data: result
@@ -52,7 +60,7 @@ const AlatController = {
         const id = req.params.id;
         const { nama, jenis, stok, keterangan } = req.body;
         try {
-            const alat = await Alat.create(id);
+            const alat = await Alat.getById(id);
             if (!alat) {
                 return res.status(404).json({
                     message: "Data alat tidak ditemukan"

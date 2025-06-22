@@ -3,7 +3,10 @@ import { motion } from "framer-motion";
 
 export default function About() {
   return (
-    <section className="bg-gradient-to-b from-white to-gray-50 px-4 py-16 antialiased dark:from-gray-900 dark:to-gray-800">
+    <section
+      id="about"
+      className="bg-gradient-to-b from-white to-gray-50 px-4 py-16 antialiased dark:from-gray-900 dark:to-gray-800"
+    >
       <div className="mx-auto max-w-screen-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

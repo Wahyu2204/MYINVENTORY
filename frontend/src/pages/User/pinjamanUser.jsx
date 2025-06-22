@@ -6,10 +6,12 @@ export default function PinjamanUser() {
   const [jenisAlat, setJenisAlat] = useState([]);
   const [namaAlat, setNamaAlat] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     jenis: "",
-    nama_alat: "",
-    jumlah: "",
+    alat_id: "",
+    tanggalPinjam: "",
+    tanggalKembali: "",
   });
 
   // Fetch jenis alat when component mounts
@@ -65,6 +67,7 @@ export default function PinjamanUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const token = localStorage.getItem("token");
@@ -76,7 +79,8 @@ export default function PinjamanUser() {
       alert("Peminjaman berhasil diajukan!");
       setFormData({ jenis: "", nama_alat: "", jumlah: "" });
     } catch (err) {
-      alert(err.response?.data?.message || "Gagal mengajukan peminjaman");
+      // alert(err.response?.data?.message || "Gagal mengajukan peminjaman");
+      setError(err.response?.data?.message || "Gagal mengajukan peminjaman");
     } finally {
       setLoading(false);
     }
@@ -115,9 +119,9 @@ export default function PinjamanUser() {
                   Nama Alat
                 </label>
                 <select
-                  value={formData.nama_alat}
+                  value={formData.alat_id}
                   onChange={(e) =>
-                    setFormData({ ...formData, nama_alat: e.target.value })
+                    setFormData({ ...formData, alat_id: e.target.value })
                   }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
@@ -134,19 +138,33 @@ export default function PinjamanUser() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Jumlah
+                  Tanggal Pinjam
                 </label>
                 <input
-                  type="number"
-                  min="1"
-                  value={formData.jumlah}
+                  type="date"
+                  value={formData.tanggalPinjam || ""}
                   onChange={(e) =>
-                    setFormData({ ...formData, jumlah: e.target.value })
+                    setFormData({ ...formData, tanggalPinjam: e.target.value })
                   }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                   required
                 />
               </div>
+              {/* <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Tanggal Kembali
+                </label>
+                <input
+                  type="date"
+                  value={formData.tanggalKembali || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, tanggalKembali: e.target.value })
+                  }
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  required
+                />
+              </div> */}
+              {error && <div className="text-red-600">{error}</div>}
 
               <button
                 type="submit"

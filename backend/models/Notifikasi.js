@@ -16,7 +16,11 @@ const Notifikasi = {
     async getAdminIds() {
         const result = await db.query('SELECT id FROM users WHERE role = ?', ['admin']);
         return result;
-    }
+    },
+    // async getAllUserIds() {
+    //     const result = await db.query('SELECT id FROM users');
+    //     return result;
+    // }
 }
 
 module.exports = Notifikasi;

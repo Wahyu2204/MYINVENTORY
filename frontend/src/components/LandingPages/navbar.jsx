@@ -1,26 +1,58 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import NotifikasiDropdown from "../dashboard/NotifikasiDropdown";
+// import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
-  const [Login, setLogin] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [Login, setLogin] = useState(!!localStorage.getItem("token"));
+  const [role, setRole] = useState(null);
+  // const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setLogin(!!token);
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setRole(decoded.role);
+      } catch {
+        setRole(null);
+      }
+    } else {
+      setRole(null);
+    }
+  }, []);
+
+  console.log("Role di navbar:", role);
+
+  // Tambahkan fungsi smooth scroll
+  const handleScroll = (e, targetId) => {
+    e.preventDefault();
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setLogin(!!localStorage.getItem("token"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setLogin(false);
     navigate("/");
-    setShowDropdown(false);
+    // setShowDropdown(false);
   };
 
   // Navbar setelah login
   const renderNavLinks = () => {
-    if (Login) {
+    if (role === "user" || role === "admin") {
       return (
         <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
           <li>
@@ -77,60 +109,96 @@ export default function Navbar() {
               Alat
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/peminjaman"
-              className={({ isActive }) =>
-                `flex items-center py-2 pr-4 pl-3 ${
-                  isActive
-                    ? "text-white bg-primary-700 rounded" // Hapus lg:bg-transparent dan lg:text-primary-700
-                    : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700"
-                } lg:p-0 dark:text-gray-400 lg:dark:hover:text-white`
-              }
-            >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                />
-              </svg>
-              Peminjaman
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/riwayat"
-              className={({ isActive }) =>
-                `flex items-center py-2 pr-4 pl-3 ${
-                  isActive
-                    ? "text-white bg-primary-700 rounded" // Hapus lg:bg-transparent dan lg:text-primary-700
-                    : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700"
-                } lg:p-0 dark:text-gray-400 lg:dark:hover:text-white`
-              }
-            >
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Riwayat
-            </NavLink>
-          </li>
+          {role === "user" && (
+            <>
+              <li>
+                <NavLink
+                  to="/peminjaman"
+                  className={({ isActive }) =>
+                    `flex items-center py-2 pr-4 pl-3 ${
+                      isActive
+                        ? "text-white bg-primary-700 rounded" // Hapus lg:bg-transparent dan lg:text-primary-700
+                        : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700"
+                    } lg:p-0 dark:text-gray-400 lg:dark:hover:text-white`
+                  }
+                >
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
+                  </svg>
+                  Peminjaman
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/riwayat"
+                  className={({ isActive }) =>
+                    `flex items-center py-2 pr-4 pl-3 ${
+                      isActive
+                        ? "text-white bg-primary-700 rounded" // Hapus lg:bg-transparent dan lg:text-primary-700
+                        : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700"
+                    } lg:p-0 dark:text-gray-400 lg:dark:hover:text-white`
+                  }
+                >
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Riwayat
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {role === "admin" && (
+            <>
+              <li>
+                <NavLink
+                  to="/akses"
+                  className={({ isActive }) =>
+                    `flex items-center py-2 pr-4 pl-3 ${
+                      isActive
+                        ? "text-white bg-primary-700 rounded"
+                        : "text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700"
+                    } lg:p-0 dark:text-gray-400 lg:dark:hover:text-white`
+                  }
+                >
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M9 12h6m2 0a8 8 0 11-16 0 8 8 0 0116 0z"
+                    />
+                  </svg>
+                  Akses
+                </NavLink>
+              </li>
+            </>
+          )}
         </ul>
       );
     }
@@ -160,8 +228,9 @@ export default function Navbar() {
           </NavLink>
         </li>
         <li>
-          <NavLink
-            to="/about"
+          <a
+            href="#about"
+            onClick={(e) => handleScroll(e, "about")}
             className="flex items-center py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
           >
             <svg
@@ -178,11 +247,12 @@ export default function Navbar() {
               />
             </svg>
             About
-          </NavLink>
+          </a>
         </li>
         <li>
-          <NavLink
-            to="/contact"
+          <a
+            href="#contact"
+            onClick={(e) => handleScroll(e, "contact")}
             className="flex items-center py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
           >
             <svg
@@ -199,7 +269,7 @@ export default function Navbar() {
               />
             </svg>
             Contact
-          </NavLink>
+          </a>
         </li>
       </ul>
     );
@@ -229,25 +299,23 @@ export default function Navbar() {
                   Masuk
                 </NavLink>
                 <NavLink
-                  to="/register"
+                  to="/regis"
                   className="text-white bg-gradient-to-r from-primary-600 to-blue-500 hover:bg-gradient-to-r hover:from-primary-700 hover:to-blue-600 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-all duration-200 hover:scale-105 focus:outline-none dark:focus:ring-primary-800 shadow-md"
                 >
                   Daftar
                 </NavLink>
               </>
             ) : (
-              <div className="relative">
+              <div className="relative flex items-center space-x-4">
+                {/* Notifikasi */}
+                <NotifikasiDropdown />
+                {/* Profil */}
                 <button
-                  onClick={() => setShowDropdown(!showDropdown)}
-                  className="flex items-center focus:outline-none"
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded focus:outline-none"
                 >
-                  <img
-                    className="w-8 h-8 rounded-full"
-                    src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                    alt="user photo"
-                  />
                   <svg
-                    className="w-4 h-4 ml-2"
+                    className="w-5 h-5 mr-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -257,79 +325,11 @@ export default function Navbar() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m4-8V5a2 2 0 10-4 0v1"
                     ></path>
                   </svg>
+                  Logout
                 </button>
-
-                {/* Dropdown Menu */}
-                {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
-                    <NavLink
-                      to="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-600"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                      Profile
-                    </NavLink>
-                    <NavLink
-                      to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-600"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                      Settings
-                    </NavLink>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        />
-                      </svg>
-                      Logout
-                    </button>
-                  </div>
-                )}
               </div>
             )}
 

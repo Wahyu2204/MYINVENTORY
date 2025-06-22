@@ -13,6 +13,14 @@ const LaporanController = {
                 });
             }
             const data = await Laporan.getLastMonthLoans();
+
+            if (data.length === 0) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'Tidak ada data laporan untuk bulan ini'
+                });
+            }
+
             return res.status(200).json({
                 status: true,
                 message: 'Berhasil mendapatkan data laporan',
